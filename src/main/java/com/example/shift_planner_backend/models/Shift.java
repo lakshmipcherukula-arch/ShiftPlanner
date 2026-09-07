@@ -6,6 +6,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import org.hibernate.annotations.AnyDiscriminatorImplicitValues;
 
+import java.util.Date;
+
 @Entity
 public class Shift {
 
@@ -13,15 +15,15 @@ public class Shift {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String Date;
+    private Date date;
     private String startTime;
     private String endTime;
     private Integer hours;
 
     public Shift(){}
 
-    public Shift(String Date,String startTime, String endTime, Integer hours) {
-        this.Date = Date;
+    public Shift(Date date,String startTime, String endTime, Integer hours) {
+        this.date = date;
         this.startTime = startTime;
         this.endTime = endTime;
         this.hours = hours;
@@ -35,12 +37,12 @@ public class Shift {
         this.id = id;
     }
 
-    public String getDate() {
-        return Date;
+    public Date getDate() {
+        return date;
     }
 
-    public void setDate(String date) {
-        Date = date;
+    public void setDate(Date date) {
+        this.date = date;
     }
 
     public String getStartTime() {
