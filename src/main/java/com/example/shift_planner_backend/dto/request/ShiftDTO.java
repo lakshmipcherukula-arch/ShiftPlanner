@@ -1,5 +1,6 @@
 package com.example.shift_planner_backend.dto.request;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -10,7 +11,7 @@ import jakarta.validation.constraints.Positive;
 public class ShiftDTO {
 
     @NotNull(message = "Date is required")
-    private Date date;
+    private LocalDate date;
 
     @NotBlank(message = "Start time is required")
     private String startTime;
@@ -26,7 +27,7 @@ public class ShiftDTO {
 
     public ShiftDTO() {}
 
-    public ShiftDTO(Date date, String startTime, String endTime, Double hours, List<Long> scheduleIds) {
+    public ShiftDTO(LocalDate date, String startTime, String endTime, Double hours, List<Long> scheduleIds) {
         this.date = date;
         this.startTime = startTime;
         this.endTime = endTime;
@@ -34,11 +35,11 @@ public class ShiftDTO {
         this.scheduleIds = scheduleIds;
     }
 
-    public Date getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 

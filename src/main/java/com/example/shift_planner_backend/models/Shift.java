@@ -7,7 +7,7 @@ import org.hibernate.annotations.AnyDiscriminatorImplicitValues;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
+//import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -19,7 +19,7 @@ public class Shift {
     @Column(name = "id")
     private Long shiftId;
 
-    private Date date;
+    private LocalDate date;
     private String startTime;
     private String endTime;
     private Double hours;
@@ -33,7 +33,7 @@ public class Shift {
 
     public Shift(){}
 
-    public Shift(Date date,String startTime, String endTime, Double hours) {
+    public Shift(LocalDate date,String startTime, String endTime, Double hours) {
         this.date = date;
         this.startTime = startTime;
         this.endTime = endTime;
@@ -48,11 +48,11 @@ public class Shift {
         this.shiftId = shiftId;
     }
 
-    public Date getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
+    public void setDate(LocalDate date) {
         this.date = date;
     }
 

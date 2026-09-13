@@ -9,7 +9,6 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.Date;
 import java.util.List;
 
 @Service
@@ -23,8 +22,7 @@ public class ShiftService {
 
     public List<Shift> getActiveShifts() {
         LocalDate today = LocalDate.now(ZoneId.systemDefault());
-        Date startOfToday = Date.from(today.atStartOfDay(ZoneId.systemDefault()).toInstant());
-        return shiftRepository.findByDateGreaterThanEqualAndIsAvailableTrue(startOfToday);
+        return shiftRepository.findByDateGreaterThanEqualAndIsAvailableTrue(today);
     }
 
     public Shift createShift(ShiftDTO shiftDTO) {
@@ -32,7 +30,7 @@ public class ShiftService {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Date is required");
         }
 
-        LocalDate shiftDate = shiftDTO.getDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        LocalDate shiftDate = shiftDTO.getDate();
         LocalDate today = LocalDate.now(ZoneId.systemDefault());
         if (shiftDate.isBefore(today)) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Shift date cannot be in the past");
