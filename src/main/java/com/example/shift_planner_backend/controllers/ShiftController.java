@@ -1,35 +1,36 @@
 package com.example.shift_planner_backend.controllers;
 
+import com.example.shift_planner_backend.dto.request.ShiftDTO;
 import com.example.shift_planner_backend.models.Shift;
-import com.example.shift_planner_backend.repositories.ShiftRepository;
+import com.example.shift_planner_backend.services.ShiftService;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/shifts")
-@CrossOrigin(origins = "*")
 public class ShiftController {
 
-    private final ShiftRepository shiftRepository;
+    private final ShiftService shiftService;
 
-    public ShiftController(ShiftRepository shiftRepository) {
-        this.shiftRepository = shiftRepository;
+    public ShiftController(ShiftService shiftService) {
+        this.shiftService = shiftService;
     }
 
     @GetMapping
     public List<Shift> getShifts() {
-        return shiftRepository.findAll();
+        return shiftService.getActiveShifts();
     }
 
     @PostMapping
-    public Shift createShift(@RequestBody Shift shift) {
-        return shiftRepository.save(shift);
+    public Shift createShift(@Valid @RequestBody ShiftDTO shiftDTO) {
+        return shiftService.createShift(shiftDTO);
     }
 
-    @DeleteMapping
-    public void deleteShift(@RequestParam Long id) {
-        shiftRepository.deleteById(id);
+    @DeleteMapping({"/{shiftId}"})
+    public void deleteShift(@PathVariable Long shiftId) {
+        shiftService.deleteShift(shiftId);
     }
 
 }
