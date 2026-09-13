@@ -1,0 +1,194 @@
+package com.example.shift_planner_backend.services;
+
+import com.example.shift_planner_backend.dto.request.ScheduleDTO;
+import com.example.shift_planner_backend.models.Schedule;
+import com.example.shift_planner_backend.models.Shift;
+import com.example.shift_planner_backend.models.User;
+import com.example.shift_planner_backend.repositories.ScheduleRepository;
+import com.example.shift_planner_backend.repositories.ShiftRepository;
+import com.example.shift_planner_backend.repositories.UserRepository;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+@Service
+public class ScheduleService {
+
+    private final ScheduleRepository scheduleRepository;
+    private final UserRepository userRepository;
+    private final ShiftRepository shiftRepository;
+
+    public ScheduleService(ScheduleRepository scheduleRepository,
+                          UserRepository userRepository,
+                          ShiftRepository shiftRepository) {
+        this.scheduleRepository = scheduleRepository;
+        this.userRepository = userRepository;
+        this.shiftRepository = shiftRepository;
+    }
+
+    public Schedule getScheduleByUserId(Long userId) {
+        Schedule schedule = scheduleRepository.findByUser_UserId(userId)
+                .orElse(null);
+        if (schedule == null) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Schedule not found");
+        }
+        schedule.getShifts().size();
+        return schedule;
+    }
+
+    public Schedule createSchedule(ScheduleDTO scheduleDTO) {
+        if (scheduleDTO == null || scheduleDTO.getUserId() == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User ID is required");
+        }
+
+        User user = userRepository.findById(scheduleDTO.getUserId())
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+
+        Schedule existingSchedule = scheduleRepository.findByUser_UserId(user.getUserId())
+                .orElse(null);
+        Schedule schedule = existingSchedule != null ? existingSchedule : new Schedule();
+        schedule.setUser(user);
+
+        List<Shift> updatedShifts = new ArrayList<>();
+        if (scheduleDTO.getShiftIds() != null && !scheduleDTO.getShiftIds().isEmpty()) {
+            updatedShifts = shiftRepository.findAllById(scheduleDTO.getShiftIds());
+        }
+
+        validateNoOverlappingShifts(updatedShifts);
+        applyShiftAvailability(schedule, updatedShifts);
+        schedule.setShifts(updatedShifts);
+
+        return scheduleRepository.save(schedule);
+    }
+
+    public Schedule updateSchedule(Long scheduleId, ScheduleDTO scheduleDTO) {
+        Schedule schedule = scheduleRepository.findById(scheduleId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Schedule not found"));
+
+        List<Shift> updatedShifts = new ArrayList<>();
+        if (scheduleDTO != null && scheduleDTO.getShiftIds() != null && !scheduleDTO.getShiftIds().isEmpty()) {
+            updatedShifts = shiftRepository.findAllById(scheduleDTO.getShiftIds());
+        }
+
+        validateNoOverlappingShifts(updatedShifts);
+        applyShiftAvailability(schedule, updatedShifts);
+        schedule.setShifts(updatedShifts);
+
+        return scheduleRepository.save(schedule);
+    }
+
+    public void deleteSchedule(Long scheduleId) {
+        scheduleRepository.deleteById(scheduleId);
+    }
+
+    private void applyShiftAvailability(Schedule schedule, List<Shift> updatedShifts) {
+        if (schedule != null && schedule.getShifts() != null) {
+            for (Shift previousShift : schedule.getShifts()) {
+                if (previousShift != null && !containsShift(updatedShifts, previousShift.getShiftId())) {
+                    previousShift.setIsAvailable(true);
+                    previousShift.getSchedules().remove(schedule);
+                }
+            }
+        }
+
+        Set<Long> updatedShiftIds = new HashSet<>();
+        for (Shift shift : updatedShifts) {
+            if (shift != null) {
+                updatedShiftIds.add(shift.getShiftId());
+                shift.setIsAvailable(false);
+                if (shift.getSchedules() == null) {
+                    shift.setSchedules(new ArrayList<>());
+                }
+                if (!shift.getSchedules().contains(schedule)) {
+                    shift.getSchedules().add(schedule);
+                }
+            }
+        }
+
+        if (schedule != null && schedule.getShifts() != null) {
+            for (Shift previousShift : schedule.getShifts()) {
+                if (previousShift != null && updatedShiftIds.contains(previousShift.getShiftId())) {
+                    previousShift.setIsAvailable(false);
+                }
+            }
+        }
+    }
+
+    private boolean containsShift(List<Shift> shifts, Long shiftId) {
+        if (shifts == null || shiftId == null) {
+            return false;
+        }
+        for (Shift shift : shifts) {
+            if (shift != null && shiftId.equals(shift.getShiftId())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void validateNoOverlappingShifts(List<Shift> shifts) {
+        if (shifts == null || shifts.size() < 2) {
+            return;
+        }
+
+        for (int i = 0; i < shifts.size(); i++) {
+            Shift first = shifts.get(i);
+            if (first == null || first.getDate() == null || first.getStartTime() == null || first.getEndTime() == null) {
+                continue;
+            }
+
+            for (int j = i + 1; j < shifts.size(); j++) {
+                Shift second = shifts.get(j);
+                if (second == null || second.getDate() == null || second.getStartTime() == null || second.getEndTime() == null) {
+                    continue;
+                }
+
+                if (!first.getDate().equals(second.getDate())) {
+                    continue;
+                }
+
+                int firstStart = toMinutes(first.getStartTime());
+                int firstEnd = toMinutes(first.getEndTime());
+                int secondStart = toMinutes(second.getStartTime());
+                int secondEnd = toMinutes(second.getEndTime());
+
+                if (firstStart < 0 || firstEnd < 0 || secondStart < 0 || secondEnd < 0) {
+                    continue;
+                }
+
+                if (firstStart < secondEnd && secondStart < firstEnd) {
+                    throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+                            "Shift times overlap with an existing shift");
+                }
+            }
+        }
+    }
+
+    private int toMinutes(String timeValue) {
+        if (timeValue == null || timeValue.isBlank()) {
+            return -1;
+        }
+
+        String normalized = timeValue.trim();
+        String[] tokens = normalized.split(":");
+        if (tokens.length != 2) {
+            return -1;
+        }
+
+        try {
+            int hours = Integer.parseInt(tokens[0]);
+            int minutes = Integer.parseInt(tokens[1]);
+            if (hours < 0 || hours > 23 || minutes < 0 || minutes > 59) {
+                return -1;
+            }
+            return hours * 60 + minutes;
+        } catch (NumberFormatException ex) {
+            return -1;
+        }
+    }
+}

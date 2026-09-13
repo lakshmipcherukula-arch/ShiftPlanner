@@ -1,40 +1,51 @@
 package com.example.shift_planner_backend.models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 import org.hibernate.annotations.AnyDiscriminatorImplicitValues;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
+@Table(name = "shifts")
 public class Shift {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "id")
+    private Long shiftId;
 
     private Date date;
     private String startTime;
     private String endTime;
-    private Integer hours;
+    private Double hours;
+
+    @Column(name = "is_available", nullable = false)
+    private Boolean isAvailable = true;
+
+    @ManyToMany(mappedBy = "shifts")
+    @JsonBackReference // Prevents infinite JSON recursion
+    private List<Schedule> schedules = new ArrayList<>();
 
     public Shift(){}
 
-    public Shift(Date date,String startTime, String endTime, Integer hours) {
+    public Shift(Date date,String startTime, String endTime, Double hours) {
         this.date = date;
         this.startTime = startTime;
         this.endTime = endTime;
         this.hours = hours;
     }
 
-    public Long getId() {
-        return id;
+    public Long getShiftId() {
+        return shiftId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setShiftId(Long shiftId) {
+        this.shiftId = shiftId;
     }
 
     public Date getDate() {
@@ -61,11 +72,29 @@ public class Shift {
         this.endTime = endTime;
     }
 
-    public Integer getHours() {
+    public Double getHours() {
         return hours;
     }
 
-    public void setHours(Integer hours) {
+    public void setHours(Double hours) {
         this.hours = hours;
     }
+
+    public Boolean getIsAvailable() {
+        return isAvailable;
+    }
+
+    public void setIsAvailable(Boolean isAvailable) {
+        this.isAvailable = isAvailable;
+    }
+
+    // Update Getters & Setters to use List<Schedule> instead of single Schedule
+    public List<Schedule> getSchedules() {
+        return schedules;
+    }
+
+    public void setSchedules(List<Schedule> schedules) {
+        this.schedules = schedules;
+    }
+
 }
