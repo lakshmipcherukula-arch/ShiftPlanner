@@ -1,0 +1,129 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background-color: white;
+  color: black;
+}
+nav {
+  display: flex;
+  background-color: white;
+  padding: 0 var(--main-padding);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+  border-bottom: 1px solid white;
+  height: 60px;
+  align-items: center;
+  flex-shrink: 0;
+  justify-content: center; 
+}
+.nav-links {
+  display: flex;
+  height: 100%;
+  align-items: center;
+}
+
+nav a {
+  text-decoration: none;
+  color: midnightblue;
+  font-weight: 500;
+  font-size: var(--font-nav-links);
+  padding: 0 16px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  position: relative;
+  transition: color 0.2s ease;
+}
+
+nav a:hover {
+  color: #3498db;
+}
+
+nav a.active {
+  color: #3498db;
+  font-weight: 600;
+}
+
+nav a.active::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 16px;
+  right: 16px;
+  height: 3px;
+  background-color: #3498db;
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
+}
+
+main {
+  flex: 1;
+  padding: var(--main-padding);
+  max-width: 1200px;
+  width: 100%;
+  margin: 0 auto;
+  box-sizing: border-box;
+  overflow-y: auto;
+  height: calc(100vh - 60px);
+}
+.hamburger-btn {
+  display: none !important;
+}
+@media (max-width: 1024px) {
+  nav a {
+    padding: 0 10px; 
+  }
+}
+@media (max-width: 768px) {
+  .hamburger-btn {
+    display: block !important; 
+  }
+
+nav {
+    display: none; 
+    position: absolute;
+    top: 60px; 
+    left: 0;
+    width: 100%;
+    height: auto;
+    background-color: white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    z-index: 999;
+    padding: 8px 0;
+  }
+
+  nav.open {
+    display: flex;
+  }
+
+  .nav-links {
+    flex-direction: column;
+    width: 100%;
+    height: auto;
+  }
+
+  nav a {
+    width: 100%;
+    padding: 14px 24px;
+    height: auto;
+    justify-content: flex-start;
+  }
+
+  nav a.active::after {
+    left: 0;
+    right: auto;
+    top: 0;
+    width: 4px;
+    height: 100%;
+  }
+  
+  main {
+    height: calc(100vh - 60px); 
+  }
+}

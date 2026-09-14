@@ -1,0 +1,100 @@
+.login-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 400px;
+}
+.login-header {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+.login-header h1 {
+  font-size: 2.5rem;
+  color: blue;
+  margin: 0;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+}
+.login-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh;
+    font-family: system-ui,-apple-system, sans-serif;
+}
+.login-card{
+    background-color: lightskyblue;
+    padding: 2.5rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    border: 1px solid white;
+    max-width: 400px;
+    width: 100%;
+    box-sizing: border-box;
+    text-align: center;
+}
+.login-card h2 {
+  margin: 0 0 0.5rem 0;
+  color:white;
+  font-size: 1.75rem;
+}
+.login-subtitle strong {
+  color: navy;
+}
+.input-group {
+  margin-bottom: 1.25rem;
+  text-align: left;
+}
+.input-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: navy;
+}
+.input-group input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 1px solid white;
+  border-radius: 6px;
+  font-size: 1rem;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+}
+.input-group input:focus {
+  border-color: blue;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+.login-error-msg {
+  color:red;
+  font-size: 0.9rem;
+  margin: 0 0 1rem 0;
+  text-align: center;
+  font-weight: 500;
+}
+.login-success-msg {
+  color: green;
+  font-size: 0.9rem;
+  margin: 0 0 1rem 0;
+  text-align: center;
+  font-weight: 500;
+}
+.login-btn {
+  width: 100%;
+  padding: 0.75rem;
+  background-color: blue;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  margin-top: 0.5rem;
+}
+
+.login-btn:hover {
+  background-color: blue;
+}
