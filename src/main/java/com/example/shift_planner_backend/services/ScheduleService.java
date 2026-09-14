@@ -32,10 +32,33 @@ public class ScheduleService {
     }
 
     public Schedule getScheduleByUserId(Long userId) {
+        if (userId == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User ID is required");
+        }
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+
         Schedule schedule = scheduleRepository.findByUser_UserId(userId)
-                .orElse(null);
-        if (schedule == null) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Schedule not found");
+                .orElseGet(() -> {
+                    Schedule newSchedule = new Schedule();
+                    newSchedule.setUser(user);
+                    newSchedule.setShifts(new ArrayList<>());
+                    return newSchedule;
+                });
+
+        if (schedule.getShifts() == null) {
+            schedule.setShifts(new ArrayList<>());
+        }
+        schedule.getShifts().size();
+        return schedule;
+    }
+
+    public Schedule getScheduleById(Long scheduleId) {
+        Schedule schedule = scheduleRepository.findById(scheduleId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Schedule not found"));
+        if (schedule.getShifts() == null) {
+            schedule.setShifts(new ArrayList<>());
         }
         schedule.getShifts().size();
         return schedule;
@@ -83,7 +106,83 @@ public class ScheduleService {
     }
 
     public void deleteSchedule(Long scheduleId) {
+        Schedule schedule = scheduleRepository.findById(scheduleId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Schedule not found"));
+
+        if (schedule.getShifts() != null) {
+            for (Shift shift : schedule.getShifts()) {
+                if (shift != null) {
+                    shift.setIsAvailable(true);
+                    if (shift.getSchedules() != null) {
+                        shift.getSchedules().remove(schedule);
+                    }
+                }
+            }
+        }
+
         scheduleRepository.deleteById(scheduleId);
+    }
+
+    public Schedule addShiftToSchedule(Long userId, Long shiftId) {
+        if (userId == null || shiftId == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User ID and Shift ID are required");
+        }
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found"));
+
+        Schedule schedule = scheduleRepository.findByUser_UserId(userId)
+                .orElseGet(() -> {
+                    Schedule newSchedule = new Schedule();
+                    newSchedule.setUser(user);
+                    newSchedule.setShifts(new ArrayList<>());
+                    return newSchedule;
+                });
+
+        Shift shift = shiftRepository.findById(shiftId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Shift not found"));
+
+        if (schedule.getShifts() == null) {
+            schedule.setShifts(new ArrayList<>());
+        }
+
+        if (!containsShift(schedule.getShifts(), shiftId)) {
+            schedule.getShifts().add(shift);
+        }
+
+        validateNoOverlappingShifts(schedule.getShifts());
+        applyShiftAvailability(schedule, schedule.getShifts());
+        return scheduleRepository.save(schedule);
+    }
+
+    public Schedule removeShiftFromSchedule(Long userId, Long shiftId) {
+        if (userId == null || shiftId == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "User ID and Shift ID are required");
+        }
+
+        Schedule schedule = scheduleRepository.findByUser_UserId(userId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Schedule not found"));
+
+        if (schedule.getShifts() == null) {
+            schedule.setShifts(new ArrayList<>());
+            return scheduleRepository.save(schedule);
+        }
+
+        List<Shift> remainingShifts = new ArrayList<>();
+        for (Shift shift : schedule.getShifts()) {
+            if (shift != null && !shiftId.equals(shift.getShiftId())) {
+                remainingShifts.add(shift);
+            } else if (shift != null) {
+                shift.setIsAvailable(true);
+                if (shift.getSchedules() != null) {
+                    shift.getSchedules().remove(schedule);
+                }
+            }
+        }
+
+        schedule.setShifts(remainingShifts);
+        applyShiftAvailability(schedule, remainingShifts);
+        return scheduleRepository.save(schedule);
     }
 
     private void applyShiftAvailability(Schedule schedule, List<Shift> updatedShifts) {
@@ -91,7 +190,10 @@ public class ScheduleService {
             for (Shift previousShift : schedule.getShifts()) {
                 if (previousShift != null && !containsShift(updatedShifts, previousShift.getShiftId())) {
                     previousShift.setIsAvailable(true);
-                    previousShift.getSchedules().remove(schedule);
+                    if (previousShift.getSchedules() != null) {
+                        previousShift.getSchedules().remove(schedule);
+                    }
+                    shiftRepository.save(previousShift);
                 }
             }
         }
@@ -107,6 +209,7 @@ public class ScheduleService {
                 if (!shift.getSchedules().contains(schedule)) {
                     shift.getSchedules().add(schedule);
                 }
+                shiftRepository.save(shift);
             }
         }
 
@@ -114,6 +217,7 @@ public class ScheduleService {
             for (Shift previousShift : schedule.getShifts()) {
                 if (previousShift != null && updatedShiftIds.contains(previousShift.getShiftId())) {
                     previousShift.setIsAvailable(false);
+                    shiftRepository.save(previousShift);
                 }
             }
         }
