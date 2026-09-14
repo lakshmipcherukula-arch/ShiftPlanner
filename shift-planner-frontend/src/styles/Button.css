@@ -1,0 +1,45 @@
+.custom-btn {
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  font-weight: bold;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: background-color 0.2s ease, opacity 0.2s ease;
+}
+.custom-btn.primary {
+  background-color: blue;
+  color: white;
+}
+
+.custom-btn.primary:hover:not(:disabled) {
+  background-color: darkblue;
+}
+
+.custom-btn.danger {
+  background-color: red;
+  color: white;
+}
+.custom-btn.danger:hover:not(:disabled) {
+  background-color: darkred;
+}
+.custom-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.btn-spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid currentColor; 
+  border-top: 2px solid transparent;
+  border-radius: 50%;
+  animation: btn-spin 0.8s linear infinite;
+}
+@keyframes btn-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

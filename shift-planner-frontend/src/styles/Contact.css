@@ -1,0 +1,41 @@
+.contact-page {
+  max-width: 400px;
+  margin: 20px auto;
+  padding: 10px;
+  font-family: sans-serif;
+}
+
+.contact-page form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 30px;
+}
+
+.contact-page input, 
+.contact-page textarea {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-family: inherit;
+}
+
+.contact-page table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.contact-page th, 
+.contact-page td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+.contact-page th {
+  background-color: #f5f5f5;
+}
+.contact-page h3 {
+  color: blue;
+}

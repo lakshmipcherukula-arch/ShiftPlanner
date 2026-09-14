@@ -1,0 +1,22 @@
+.findshifts-container {
+  padding: auto;
+  max-width: 1200px;
+  margin: 0 auto;
+  font-family: sans-serif;
+}
+.findshifts-container h2 {
+  color: black;
+  margin-bottom: 20px;
+}
+.shifts-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+}
+.shift-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0.1);
+}
+.shift-card p strong {
+  color: #210606;
+}
