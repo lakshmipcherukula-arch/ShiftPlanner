@@ -8,7 +8,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -20,9 +22,35 @@ public class ShiftService {
         this.shiftRepository = shiftRepository;
     }
 
-    public List<Shift> getActiveShifts() {
+    public List<Shift> getActiveShifts(String type) {
         LocalDate today = LocalDate.now(ZoneId.systemDefault());
-        return shiftRepository.findByDateGreaterThanEqualAndIsAvailableTrue(today);
+        List<Shift> shifts = shiftRepository.findByDateGreaterThanEqualAndIsAvailableTrue(today);
+        if (type == null || type.isBlank() || type.equalsIgnoreCase("all")) {
+            return shifts;
+        }
+        List<Shift> filteredShifts = new ArrayList<>();
+        for (Shift shift : shifts) {
+            if (isShiftInTimeRange(shift.getStartTime(), type)) {
+                filteredShifts.add(shift);
+            }
+        }
+        return filteredShifts;
+    }
+
+    private boolean isShiftInTimeRange(LocalTime startTime, String type) {
+        if (startTime == null) return false;
+
+        int hour = startTime.getHour(); // 0 to 23
+
+        if (type.equalsIgnoreCase("MORNING")) {
+            return hour >= 5 && hour < 12;   // 5:00 AM - 11:59 AM
+        } else if (type.equalsIgnoreCase("AFTERNOON")) {
+            return hour >= 12 && hour < 17;  // 12:00 PM - 4:59 PM
+        } else if (type.equalsIgnoreCase("EVENING")) {
+            return hour >= 17 && hour < 24;  // 5:00 PM - 11:59 PM
+        }
+
+        return true;
     }
 
     public Shift createShift(ShiftDTO shiftDTO) {

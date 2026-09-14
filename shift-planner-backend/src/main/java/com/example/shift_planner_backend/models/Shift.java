@@ -1,11 +1,10 @@
 package com.example.shift_planner_backend.models;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import org.hibernate.annotations.AnyDiscriminatorImplicitValues;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 //import java.util.Date;
 import java.util.List;
@@ -20,8 +19,8 @@ public class Shift {
     private Long shiftId;
 
     private LocalDate date;
-    private String startTime;
-    private String endTime;
+    private LocalTime startTime;
+    private LocalTime endTime;
     private Double hours;
 
     @Column(name = "is_available", nullable = false)
@@ -33,7 +32,7 @@ public class Shift {
 
     public Shift(){}
 
-    public Shift(LocalDate date,String startTime, String endTime, Double hours) {
+    public Shift(LocalDate date,LocalTime startTime, LocalTime endTime, Double hours) {
         this.date = date;
         this.startTime = startTime;
         this.endTime = endTime;
@@ -56,19 +55,19 @@ public class Shift {
         this.date = date;
     }
 
-    public String getStartTime() {
+    public LocalTime getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(String startTime) {
+    public void setStartTime(LocalTime startTime) {
         this.startTime = startTime;
     }
 
-    public String getEndTime() {
+    public LocalTime getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(String endTime) {
+    public void setEndTime(LocalTime endTime) {
         this.endTime = endTime;
     }
 

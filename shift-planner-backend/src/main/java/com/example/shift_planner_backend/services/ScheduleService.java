@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -273,26 +274,11 @@ public class ScheduleService {
         }
     }
 
-    private int toMinutes(String timeValue) {
-        if (timeValue == null || timeValue.isBlank()) {
+    private int toMinutes(LocalTime timeValue) {
+        if (timeValue == null) {
             return -1;
         }
-
-        String normalized = timeValue.trim();
-        String[] tokens = normalized.split(":");
-        if (tokens.length != 2) {
-            return -1;
-        }
-
-        try {
-            int hours = Integer.parseInt(tokens[0]);
-            int minutes = Integer.parseInt(tokens[1]);
-            if (hours < 0 || hours > 23 || minutes < 0 || minutes > 59) {
-                return -1;
-            }
-            return hours * 60 + minutes;
-        } catch (NumberFormatException ex) {
-            return -1;
-        }
+        return timeValue.getHour() * 60 + timeValue.getMinute();
     }
+
 }
