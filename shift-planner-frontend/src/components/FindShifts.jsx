@@ -112,6 +112,10 @@ return (
       </div>
 
       {/* Day Dropdown */}
+      <div className="filter-group">
+          <label htmlFor="day-filter" className="filter-label">
+            Filter by Day:
+          </label>
       <select
         className="day-select-dropdown"
         value={selectedDay}
@@ -126,6 +130,7 @@ return (
           <option value="Friday">Friday</option>
           <option value="Saturday">Saturday</option>
       </select>
+      </div>
       </div>
 
 
