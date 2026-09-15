@@ -28,6 +28,12 @@ public class ShiftService {
         if (type == null || type.isBlank() || type.equalsIgnoreCase("all")) {
             return shifts;
         }
+        if (!type.equalsIgnoreCase("MORNING") &&
+                !type.equalsIgnoreCase("AFTERNOON") &&
+                !type.equalsIgnoreCase("EVENING")) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid shift filter type: " + type);
+        }
+
         List<Shift> filteredShifts = new ArrayList<>();
         for (Shift shift : shifts) {
             if (isShiftInTimeRange(shift.getStartTime(), type)) {
@@ -43,14 +49,14 @@ public class ShiftService {
         int hour = startTime.getHour(); // 0 to 23
 
         if (type.equalsIgnoreCase("MORNING")) {
-            return hour >= 5 && hour < 12;   // 5:00 AM - 11:59 AM
+            return hour >= 5 && hour < 12;
         } else if (type.equalsIgnoreCase("AFTERNOON")) {
-            return hour >= 12 && hour < 17;  // 12:00 PM - 4:59 PM
+            return hour >= 12 && hour < 17;
         } else if (type.equalsIgnoreCase("EVENING")) {
-            return hour >= 17 && hour < 24;  // 5:00 PM - 11:59 PM
+            return hour >= 17 && hour < 24;
         }
 
-        return true;
+        return false;
     }
 
     public Shift createShift(ShiftDTO shiftDTO) {
