@@ -37,9 +37,11 @@ const getShiftCategory = (startTimeStr) =>{
 
   const hour = parseInt(startTimeStr.split(":")[0], 10);
 
-  if(hour < 12) return "Morning";
-  if(hour >= 12  && hour < 17) return "Afernoon";
-  if(hour >17 && hour< 22) return "Evening";
+  if(hour >= 5 && hour < 12) return "Morning";
+  if(hour >= 12  && hour < 17) return "Afternoon";
+  if(hour >= 17 && hour < 24) return "Evening";
+
+  return "All";
 };
 
 const filteredShifts = shifts.filter((shift) => {
