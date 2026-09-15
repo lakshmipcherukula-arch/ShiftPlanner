@@ -37,9 +37,11 @@ const getShiftCategory = (startTimeStr) =>{
 
   const hour = parseInt(startTimeStr.split(":")[0], 10);
 
-  if(hour < 12) return "Morning";
-  if(hour >= 12) return "Afernoon";
-  return "Evening";
+  if(hour >= 5 && hour < 12) return "Morning";
+  if(hour >= 12  && hour < 17) return "Afternoon";
+  if(hour >= 17 && hour < 24) return "Evening";
+
+  return "All";
 };
 
 const filteredShifts = shifts.filter((shift) => {
@@ -70,15 +72,8 @@ const filteredShifts = shifts.filter((shift) => {
         return; 
     }
 
-    //otherwise, execute shift selection and show success message
     onSelectShift(currentShiftId);
-    // const selected = await onSelectShift(selectedShift.shiftId || selectedShift.id);
-    // if (!selected) {
-    //   setErrorMessage("Unable to add shift. Please try again.");
-    //   setTimeout(() => setErrorMessage(""), 3000);
-    //   return;
-    // }
-
+    
     setSuccessMessage("Shift added to schedule successfully!");
     setTimeout(() => {
       setSuccessMessage("");
@@ -88,6 +83,23 @@ const filteredShifts = shifts.filter((shift) => {
 return (
     <div className="findshifts-container">
       <h2> Available Shifts</h2>
+
+      {/* Filter Button*/}
+      <div className="shift-filters">
+        {["All", "Morning", "Afternoon", "Evening"].map((category) =>(
+
+          <button
+            key = {category}
+            type = "button"
+            onClick={() => setSelectedFilter(category)}
+            className = {`filter-btn ${selectedFilter === category ? "active" : ""}`}
+            >
+              {category}
+
+            </button>
+        ))}
+      </div>
+
 
       {successMessage && (
         <div style={{
@@ -102,13 +114,13 @@ return (
           {successMessage}
         </div>
       )}
-      {shifts.length === 0 ? (
+      {filteredShifts.length === 0 ? (
         <p style={{ textAlign: "center", color:"gray" }}>
           No shifts available.
         </p>
         ) : (
           <div className="shifts-list">
-            {shifts.map((shift) => {
+            {filteredShifts.map((shift) => {
                 const shiftId = shift.shiftId || shift.id;
                 const isConflicting = conflictShiftId === shiftId;
               return( 
