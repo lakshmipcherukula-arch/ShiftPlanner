@@ -39,7 +39,7 @@ const getShiftCategory = (startTimeStr) =>{
 
   if(hour < 12) return "Morning";
   if(hour >= 12  && hour < 17) return "Afernoon";
-  return "Evening";
+  if(hour >17 && hour< 22) return "Evening";
 };
 
 const filteredShifts = shifts.filter((shift) => {
@@ -112,13 +112,13 @@ return (
           {successMessage}
         </div>
       )}
-      {shifts.length === 0 ? (
+      {filteredShifts.length === 0 ? (
         <p style={{ textAlign: "center", color:"gray" }}>
           No shifts available.
         </p>
         ) : (
           <div className="shifts-list">
-            {shifts.map((shift) => {
+            {filteredShifts.map((shift) => {
                 const shiftId = shift.shiftId || shift.id;
                 const isConflicting = conflictShiftId === shiftId;
               return( 
