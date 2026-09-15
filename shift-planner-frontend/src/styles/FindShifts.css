@@ -16,6 +16,12 @@
   margin-bottom: 25px;
   flex-wrap: wrap;
 }
+
+.time-of-day{
+  display: flex;
+  gap: 8px;
+}
+
 .filter-btn {
   padding: 8px 18px;
   border-radius: 20px;
@@ -35,6 +41,22 @@
   background-color: blue;
   color: white;
   border-color: blue;
+}
+
+.day-select-dropdown {
+  padding: 8px 14px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 0.95rem;
+  background-color: #ffffff;
+  color: #333;
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.day-select-dropdown:focus {
+  border-color: #0056b3;
 }
 
 .no-shifts {
