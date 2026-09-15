@@ -9,7 +9,9 @@ function FindShifts({ shifts,assignedShifts=[], onSelectShift }) {
   const [conflictShiftId,setConflictShiftId] = useState(null);
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  //filter states
   const [selectedFilter, setSelectedFilter] = useState("All");
+  const [selectedDay, setSelectedDay]  =useState("All");
 
   //Helper function to format ISO date strings (YYYY-MM-DD).
   //Appending 'T00:00:00' prevents timezone shifts from offsetting the local date.
@@ -46,8 +48,16 @@ const getShiftCategory = (startTimeStr) =>{
 
 const filteredShifts = shifts.filter((shift) => {
 
-  if (selectedFilter === "All") return true;
-  return getShiftCategory(shift.startTime) === selectedFilter;
+  const matchesTime = 
+    selectedFilter === "All" || getShiftCategory(shift.startTime) === selectedFilter;
+
+  const shiftDay = new Date(shift.date.includes("T") ? shift.date : shift.date + "T00:00:00"
+  ).toLocaleDateString("en-US", { weekday: "long" });
+
+  const matchesDay = selectedDay === "All" || shiftDay === selectedDay;
+  
+  return matchesTime && matchesDay;
+
 });
 
   //Checking for overlapping/conflict shifts
@@ -84,8 +94,9 @@ return (
     <div className="findshifts-container">
       <h2> Available Shifts</h2>
 
-      {/* Filter Button*/}
+      {/* Filter Bar*/}
       <div className="shift-filters">
+        <div className="time-of-day">
         {["All", "Morning", "Afternoon", "Evening"].map((category) =>(
 
           <button
@@ -98,6 +109,23 @@ return (
 
             </button>
         ))}
+      </div>
+
+      {/* Day Dropdown */}
+      <select
+        className="day-select-dropdown"
+        value={selectedDay}
+        onChange={(e) => setSelectedDay(e.target.value)}
+      >
+        <option value="All">All Days</option>
+          <option value="Sunday">Sunday</option>
+          <option value="Monday">Monday</option>
+          <option value="Tuesday">Tuesday</option>
+          <option value="Wednesday">Wednesday</option>
+          <option value="Thursday">Thursday</option>
+          <option value="Friday">Friday</option>
+          <option value="Saturday">Saturday</option>
+      </select>
       </div>
 
 
