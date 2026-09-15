@@ -9,6 +9,7 @@ function FindShifts({ shifts,assignedShifts=[], onSelectShift }) {
   const [conflictShiftId,setConflictShiftId] = useState(null);
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [selectedFilter, setSelectedFilter] = useState("All");
 
   //Helper function to format ISO date strings (YYYY-MM-DD).
   //Appending 'T00:00:00' prevents timezone shifts from offsetting the local date.
@@ -30,6 +31,22 @@ function FindShifts({ shifts,assignedShifts=[], onSelectShift }) {
         day: "numeric",
       });
 };
+
+const getShiftCategory = (startTimeStr) =>{
+  if(!startTimeStr) return "All";
+
+  const hour = parseInt(startTimeStr.split(":")[0], 10);
+
+  if(hour < 12) return "Morning";
+  if(hour >= 12) return "Afernoon";
+  return "Evening";
+};
+
+const filteredShifts = shifts.filter((shift) => {
+
+  if (selectedFilter === "All") return true;
+  return getShiftCategory(shift.startTime) === selectedFilter;
+});
 
   //Checking for overlapping/conflict shifts
 
