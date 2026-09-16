@@ -145,7 +145,6 @@ return (
             path="/find-shifts"
             element={
               <FindShifts
-                shifts={availableShifts}
                 assignedShifts={mySchedule}
                 onSelectShift={handleSelect}
               />

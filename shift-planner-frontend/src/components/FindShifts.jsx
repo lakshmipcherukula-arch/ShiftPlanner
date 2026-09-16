@@ -1,17 +1,44 @@
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import "../styles/FindShifts.css";
 import Button from "./Button";
 
 //Displays a list of unassigned open shifts
 
-function FindShifts({ shifts,assignedShifts=[], onSelectShift }) {
-  
+function FindShifts({ assignedShifts=[], onSelectShift }) {
+
+  const [shifts, setShifts] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [conflictShiftId,setConflictShiftId] = useState(null);
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   //filter states
   const [selectedFilter, setSelectedFilter] = useState("All");
   const [selectedDay, setSelectedDay]  =useState("All");
+
+  useEffect(() => {
+    const fetchFilteredShifts = async () => {
+      setLoading(true);
+      try {
+        const url = `/shifts?type=${selectedFilter}&day=${selectedDay}`;
+
+        const response = await fetch(url);
+        if (!response.ok) {
+          throw new Error("Unable to fetch shifts from server");
+        }
+
+        const data = await response.json();
+        setShifts(data);
+      } catch (err) {
+        console.error("Error fetching filtered shifts:", err);
+        setErrorMessage("Failed to load shifts from server.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchFilteredShifts();
+  }, [selectedFilter, selectedDay]);
+
 
   //Helper function to format ISO date strings (YYYY-MM-DD).
   //Appending 'T00:00:00' prevents timezone shifts from offsetting the local date.
@@ -34,32 +61,19 @@ function FindShifts({ shifts,assignedShifts=[], onSelectShift }) {
       });
 };
 
-const getShiftCategory = (startTimeStr) =>{
-  if(!startTimeStr) return "All";
 
-  const hour = parseInt(startTimeStr.split(":")[0], 10);
-
-  if(hour >= 5 && hour < 12) return "Morning";
-  if(hour >= 12  && hour < 17) return "Afternoon";
-  if(hour >= 17 && hour < 24) return "Evening";
-
-  return "All";
-};
-
-const filteredShifts = shifts.filter((shift) => {
-
-  const matchesTime = 
-    selectedFilter === "All" || getShiftCategory(shift.startTime) === selectedFilter;
-
-  const shiftDay = new Date(shift.date.includes("T") ? shift.date : shift.date + "T00:00:00"
+const filteredShifts = (shifts || []).filter((shift) => {
+  if (!shift || !shift.date) return true;
+/*
+  const shiftDay = new Date(
+    shift.date.includes("T") ? shift.date : shift.date + "T00:00:00"
   ).toLocaleDateString("en-US", { weekday: "long" });
 
-  const matchesDay = selectedDay === "All" || shiftDay === selectedDay;
-  
-  return matchesTime && matchesDay;
-
+  return selectedDay === "All" || shiftDay === selectedDay;
 });
-
+*/
+return true;
+});
   //Checking for overlapping/conflict shifts
 
  const handleSelectClick = (selectedShift) => {
@@ -83,6 +97,9 @@ const filteredShifts = shifts.filter((shift) => {
     }
 
     onSelectShift(currentShiftId);
+    setShifts((prevShifts) =>
+      prevShifts.filter((s) => (s.shiftId || s.id) !== currentShiftId)
+    );
     
     setSuccessMessage("Shift added to schedule successfully!");
     setTimeout(() => {
@@ -112,6 +129,7 @@ return (
       </div>
 
       {/* Day Dropdown */}
+      
       <div className="filter-group">
           <label htmlFor="day-filter" className="filter-label">
             Filter by Day:
@@ -131,6 +149,7 @@ return (
           <option value="Saturday">Saturday</option>
       </select>
       </div>
+      
       </div>
 
 

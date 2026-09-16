@@ -22,31 +22,45 @@ public class ShiftService {
         this.shiftRepository = shiftRepository;
     }
 
-    public List<Shift> getActiveShifts(String type) {
+    public List<Shift> getActiveShifts(String type, String day) {
         LocalDate today = LocalDate.now(ZoneId.systemDefault());
         List<Shift> shifts = shiftRepository.findByDateGreaterThanEqualAndIsAvailableTrue(today);
+
+        List<Shift> timeFilteredShifts = new ArrayList<>();
         if (type == null || type.isBlank() || type.equalsIgnoreCase("all")) {
-            return shifts;
-        }
-        if (!type.equalsIgnoreCase("MORNING") &&
+            timeFilteredShifts = shifts;
+        } else {
+            if (!type.equalsIgnoreCase("MORNING") &&
                 !type.equalsIgnoreCase("AFTERNOON") &&
                 !type.equalsIgnoreCase("EVENING")) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid shift filter type: " + type);
         }
-
-        List<Shift> filteredShifts = new ArrayList<>();
-        for (Shift shift : shifts) {
+            for (Shift shift : shifts) {
             if (isShiftInTimeRange(shift.getStartTime(), type)) {
-                filteredShifts.add(shift);
+                timeFilteredShifts.add(shift);
             }
         }
-        return filteredShifts;
     }
-
+        if (day == null || day.isBlank() || day.equalsIgnoreCase("all")) {
+            return timeFilteredShifts;
+        }
+        List<Shift> finalFilteredShifts = new ArrayList<>();
+        for (Shift shift : timeFilteredShifts) {
+            if (isShiftOnDay(shift.getDate(), day)) {
+                finalFilteredShifts.add(shift);
+            }
+        }
+        return finalFilteredShifts;
+    }
+    private boolean isShiftOnDay(LocalDate date, String day) {
+        if (date == null) return false;
+        String shiftDayName = date.getDayOfWeek().name();
+        return shiftDayName.equalsIgnoreCase(day);
+    }
     private boolean isShiftInTimeRange(LocalTime startTime, String type) {
         if (startTime == null) return false;
 
-        int hour = startTime.getHour(); // 0 to 23
+        int hour = startTime.getHour();
 
         if (type.equalsIgnoreCase("MORNING")) {
             return hour >= 5 && hour < 12;

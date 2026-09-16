@@ -19,8 +19,8 @@ public class ShiftController {
     }
 
     @GetMapping
-    public List<Shift> getShifts(@RequestParam(required = false) String type) {
-        return shiftService.getActiveShifts(type);
+    public List<Shift> getShifts(@RequestParam(required = false) String type, @RequestParam(required = false) String day) {
+        return shiftService.getActiveShifts(type, day);
     }
 
     @PostMapping
