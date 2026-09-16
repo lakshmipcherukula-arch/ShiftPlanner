@@ -97,6 +97,9 @@ return true;
     }
 
     onSelectShift(currentShiftId);
+    setShifts((prevShifts) =>
+      prevShifts.filter((s) => (s.shiftId || s.id) !== currentShiftId)
+    );
     
     setSuccessMessage("Shift added to schedule successfully!");
     setTimeout(() => {
