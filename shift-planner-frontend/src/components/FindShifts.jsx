@@ -19,10 +19,7 @@ function FindShifts({ assignedShifts=[], onSelectShift }) {
     const fetchFilteredShifts = async () => {
       setLoading(true);
       try {
-        const url =
-          selectedFilter === "All"
-            ? "/shifts"
-            : `/shifts?type=${selectedFilter}`;
+        const url = `/shifts?type=${selectedFilter}&day=${selectedDay}`;
 
         const response = await fetch(url);
         if (!response.ok) {
@@ -40,7 +37,7 @@ function FindShifts({ assignedShifts=[], onSelectShift }) {
     };
 
     fetchFilteredShifts();
-  }, [selectedFilter]);
+  }, [selectedFilter, selectedDay]);
 
 
   //Helper function to format ISO date strings (YYYY-MM-DD).
@@ -129,7 +126,7 @@ return (
       </div>
 
       {/* Day Dropdown */}
-      {/*
+      
       <div className="filter-group">
           <label htmlFor="day-filter" className="filter-label">
             Filter by Day:
@@ -149,7 +146,7 @@ return (
           <option value="Saturday">Saturday</option>
       </select>
       </div>
-      */}
+      
       </div>
 
 
