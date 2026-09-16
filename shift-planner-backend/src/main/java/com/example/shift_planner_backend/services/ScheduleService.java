@@ -146,13 +146,16 @@ public class ScheduleService {
         if (schedule.getShifts() == null) {
             schedule.setShifts(new ArrayList<>());
         }
+        List<Shift> updatedShifts = new ArrayList<>(schedule.getShifts());
 
         if (!containsShift(schedule.getShifts(), shiftId)) {
             schedule.getShifts().add(shift);
         }
 
-        validateNoOverlappingShifts(schedule.getShifts());
-        applyShiftAvailability(schedule, schedule.getShifts());
+        validateNoOverlappingShifts(updatedShifts);
+        applyShiftAvailability(schedule, updatedShifts);
+        schedule.setShifts(updatedShifts);
+
         return scheduleRepository.save(schedule);
     }
 
