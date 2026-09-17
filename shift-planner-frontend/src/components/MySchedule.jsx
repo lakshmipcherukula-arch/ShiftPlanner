@@ -10,6 +10,8 @@ function MySchedule({ schedule, onDropShift }) {
   const selectedShifts = Array.isArray(schedule) ? schedule : [];
 
   const [selectedDate, setSelectedDate] = useState(new Date());
+
+  const [dropSuccessMessage, setDropSuccessMessage] = useState("");
   
   const formatCalendarDate = (dateObj) => {
     const year = dateObj.getFullYear();
@@ -26,6 +28,15 @@ const displayedShifts = selectedShifts.filter(
     (shift) => shift.date === formattedDateString,
   );
 
+  const handleDropClick = async (shiftId) => {
+    if (onDropShift) {
+      await onDropShift(shiftId);
+    }
+    setDropSuccessMessage("Shift dropped successfully!");
+    setTimeout(() => {
+      setDropSuccessMessage("");
+    }, 2000);
+  };
   return (
     <div className="myschedule-container" style={{ padding: "1rem" }}>
       <h2 style={{color: "navy"}}>My Schedule (Calendar View):</h2>
