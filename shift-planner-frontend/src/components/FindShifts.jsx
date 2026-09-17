@@ -101,7 +101,7 @@ const filteredShifts = (shifts || []).filter((shift) => {
     setSuccessMessage("Shift added to schedule successfully!");
     setTimeout(() => {
       setSuccessMessage("");
-      }, 3000); 
+      }, 1000); 
   };  
 
 return (
