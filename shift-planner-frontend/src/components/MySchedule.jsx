@@ -41,6 +41,23 @@ const displayedShifts = selectedShifts.filter(
     <div className="myschedule-container" style={{ padding: "1rem" }}>
       <h2 style={{color: "navy"}}>My Schedule (Calendar View):</h2>
 
+      {dropSuccessMessage && (
+        <div
+          style={{
+            backgroundColor: "#d4edda",
+            color: "#155724",
+            padding: "10px",
+            borderRadius: "4px",
+            border: "1px solid #c3e6cb",
+            marginBottom: "15px",
+            textAlign: "center",
+            fontWeight: "bold",
+          }}
+        >
+          {dropSuccessMessage}
+        </div>
+      )}
+
       <div
         style={{
           display: "flex",
@@ -77,7 +94,7 @@ const displayedShifts = selectedShifts.filter(
                 <strong>Hours:</strong> {shift.hours} hrs
               </p>
               <button
-                onClick={() => onDropShift(shift.shiftId || shift.id)}
+                onClick={() => handleDropClick(shift.shiftId || shift.id)}
                 style={{
                   backgroundColor: "red",
                   color: "white",
