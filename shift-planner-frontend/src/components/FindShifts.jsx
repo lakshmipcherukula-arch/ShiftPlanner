@@ -11,6 +11,7 @@ function FindShifts({ assignedShifts=[], onSelectShift }) {
   const [conflictShiftId,setConflictShiftId] = useState(null);
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+
   //filter states
   const [selectedFilter, setSelectedFilter] = useState("All");
   const [selectedDay, setSelectedDay]  =useState("All");
@@ -18,10 +19,12 @@ function FindShifts({ assignedShifts=[], onSelectShift }) {
   useEffect(() => {
     const fetchFilteredShifts = async () => {
       setLoading(true);
+      setErrorMessage("");
+
       try {
         const url = `/shifts?type=${selectedFilter}&day=${selectedDay}`;
-
         const response = await fetch(url);
+
         if (!response.ok) {
           throw new Error("Unable to fetch shifts from server");
         }
@@ -63,14 +66,15 @@ function FindShifts({ assignedShifts=[], onSelectShift }) {
 
 
 const assignedShiftIds = (assignedShifts || []).map((s) => s.shiftId || s.id);
-const filteredShifts = (shifts || []).filter((shift) => {
-  const currentId = shift.shiftId || shift.id;
-  if (assignedShiftIds.includes(currentId)) {
-    return false;
-    }
 
-  return true;
-});
+const displayedShifts = (shifts || [])
+  .filter((shift) => !assignedShiftIds.includes(shift.shiftId || shift.id))
+  .sort((a, b) => {
+    const dateCompare = a.date.localeCompare(b.date);
+    if (dateCompare !== 0) return dateCompare;
+      return a.startTime.localeCompare(b.startTime);
+  });
+
   //Checking for overlapping/conflict shifts
 
  const handleSelectClick = (selectedShift) => {
@@ -163,13 +167,13 @@ return (
           {successMessage}
         </div>
       )}
-      {filteredShifts.length === 0 ? (
+      {displayedShifts.length === 0 ? (
         <p style={{ textAlign: "center", color:"gray" }}>
           No shifts available.
         </p>
         ) : (
           <div className="shifts-list">
-            {filteredShifts.map((shift) => {
+            {displayedShifts.map((shift) => {
                 const shiftId = shift.shiftId || shift.id;
                 const isConflicting = conflictShiftId === shiftId;
               return( 
