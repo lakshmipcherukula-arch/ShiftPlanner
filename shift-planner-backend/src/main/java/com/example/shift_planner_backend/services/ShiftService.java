@@ -24,8 +24,7 @@ public class ShiftService {
 
     public List<Shift> getActiveShifts(String type, String day) {
         LocalDate today = LocalDate.now(ZoneId.systemDefault());
-        List<Shift> shifts = shiftRepository.findByDateGreaterThanEqualAndIsAvailableTrue(today);
-
+        List<Shift> shifts = shiftRepository.findByDateGreaterThanEqualAndIsAvailableTrueOrderByDateAscStartTimeAsc(today);
         List<Shift> timeFilteredShifts = new ArrayList<>();
         if (type == null || type.isBlank() || type.equalsIgnoreCase("all")) {
             timeFilteredShifts = shifts;
@@ -46,16 +45,16 @@ public class ShiftService {
         }
         List<Shift> finalFilteredShifts = new ArrayList<>();
         for (Shift shift : timeFilteredShifts) {
-            if (isShiftOnDay(shift.getDate(), day)) {
+            if (shift.getDate() != null && isShiftOnDay(shift.getDate(), day)) {
                 finalFilteredShifts.add(shift);
             }
         }
         return finalFilteredShifts;
     }
     private boolean isShiftOnDay(LocalDate date, String day) {
-        if (date == null) return false;
+        if (date == null || day == null) return false;
         String shiftDayName = date.getDayOfWeek().name();
-        return shiftDayName.equalsIgnoreCase(day);
+        return shiftDayName.equalsIgnoreCase(day.trim());
     }
     private boolean isShiftInTimeRange(LocalTime startTime, String type) {
         if (startTime == null) return false;
