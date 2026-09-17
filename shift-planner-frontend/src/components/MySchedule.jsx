@@ -38,72 +38,45 @@ const displayedShifts = selectedShifts.filter(
     }, 2000);
   };
   return (
-    <div className="myschedule-container" style={{ padding: "1rem" }}>
-      <h2 style={{color: "navy"}}>My Schedule (Calendar View):</h2>
+    <div className="myschedule-container">
+      <h2 className="myschedule-title"> My Schedule (Calendar View):</h2>
 
       {dropSuccessMessage && (
-        <div
-          style={{
-            backgroundColor: "#d4edda",
-            color: "#155724",
-            padding: "10px",
-            borderRadius: "4px",
-            border: "1px solid #c3e6cb",
-            marginBottom: "15px",
-            textAlign: "center",
-            fontWeight: "bold",
-          }}
-        >
+
+        <div className="drop-success-banner">
           {dropSuccessMessage}
         </div>
       )}
 
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          marginBottom: "20px",
-        }}
-      >
+      <div className="calendar-wrapper">
         <Calendar onChange={setSelectedDate} value={selectedDate} />
       </div>
 
       <div className="shifts-section">
-        <h3 style={{color:"navy"}}>Shifts for {formattedDateString}:</h3>
+        <h3 className="shift-section-title">
+          Shifts for {formattedDateString}:
+        </h3>
         <br/>
         {displayedShifts.length === 0 ? (
-          <p style={{color:"navy", fontSize:"large"}}>No shifts scheduled for this day.</p>
+          <p className="no-shifts-text">
+            No shifts scheduled for this day.
+          </p>
         ) : (
           displayedShifts.map((shift) => (
             <div
               key={shift.shiftId || shift.id}
-              style={{
-                borderLeft: "5px solid blue",
-                padding: "12px",
-                margin: "10px 0",
-                background: "white",
-                borderRadius: "4px",
-                boxShadow: "0 2px 4px blue",
-                width: "auto"
-              }}
+              className="shift-card"
             >
-              <p style={{ margin: "4px 0" }}>
+              <p>
                 <strong>Time:</strong> {shift.startTime} - {shift.endTime}
               </p>
-              <p style={{ margin: "4px 0" }}>
+              <p>
                 <strong>Hours:</strong> {shift.hours} hrs
               </p>
+              
               <button
+                className="drop-shift-btn"
                 onClick={() => handleDropClick(shift.shiftId || shift.id)}
-                style={{
-                  backgroundColor: "red",
-                  color: "white",
-                  border: "none",
-                  padding: "5px 10px",
-                  borderRadius: "4px",
-                  cursor: "pointer",
-                  marginTop: "5px",
-                }}
               >
                 Drop Shift
               </button>
