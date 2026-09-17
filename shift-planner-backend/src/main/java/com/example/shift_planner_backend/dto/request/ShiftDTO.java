@@ -5,7 +5,7 @@ import java.time.LocalTime;
 import java.util.Date;
 import java.util.List;
 
-import jakarta.validation.constraints.NotBlank;
+//import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 
@@ -14,10 +14,10 @@ public class ShiftDTO {
     @NotNull(message = "Date is required")
     private LocalDate date;
 
-    @NotBlank(message = "Start time is required")
+    @NotNull(message = "Start time is required")
     private LocalTime startTime;
 
-    @NotBlank(message = "End time is required")
+    @NotNull(message = "End time is required")
     private LocalTime endTime;
 
     @NotNull(message = "Hours are required")

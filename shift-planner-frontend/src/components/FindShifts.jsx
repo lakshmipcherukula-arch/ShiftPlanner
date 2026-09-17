@@ -62,17 +62,14 @@ function FindShifts({ assignedShifts=[], onSelectShift }) {
 };
 
 
+const assignedShiftIds = (assignedShifts || []).map((s) => s.shiftId || s.id);
 const filteredShifts = (shifts || []).filter((shift) => {
-  if (!shift || !shift.date) return true;
-/*
-  const shiftDay = new Date(
-    shift.date.includes("T") ? shift.date : shift.date + "T00:00:00"
-  ).toLocaleDateString("en-US", { weekday: "long" });
+  const currentId = shift.shiftId || shift.id;
+  if (assignedShiftIds.includes(currentId)) {
+    return false;
+    }
 
-  return selectedDay === "All" || shiftDay === selectedDay;
-});
-*/
-return true;
+  return true;
 });
   //Checking for overlapping/conflict shifts
 
@@ -104,7 +101,7 @@ return true;
     setSuccessMessage("Shift added to schedule successfully!");
     setTimeout(() => {
       setSuccessMessage("");
-      }, 3000); 
+      }, 1000); 
   };  
 
 return (
