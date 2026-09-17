@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Calendar from "react-calendar";//Installed react-calendar library
 import "react-calendar/dist/Calendar.css";
+import "../styles/MySchedule.css";
 
 //Provides an interactive calendar interface where employees can select a date to view their assigned shifts for that day. 
 //It also allows users to "drop" an assigned shift.
