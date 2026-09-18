@@ -1,5 +1,7 @@
 import "../styles/Button.css"; 
-//Reuable Button Component
+
+//Reusable Button Component
+
 function Button({ 
   children, 
   onClick, 

@@ -7,7 +7,7 @@ const employee = {
   name: "Lakshmi",
   employeeId: "Lakshmi2026",
   role: "Associate",
-  Workplace: "ABC Warehouse"
+  workplace: "ABC Warehouse"
 };
 
 const [address,setAddress] = useState("123 Manchester Rd, Manchester, MO");

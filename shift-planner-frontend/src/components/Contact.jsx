@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import Button from "./Button"; 
 import "../styles/Contact.css";
 
@@ -43,7 +43,7 @@ function Contact() {
           type="text" 
           value={subject}
           onChange={(e) => setSubject(e.target.value)}
-          placeholder="Shift error,Leave Request" 
+          placeholder="Shift Error, Leave Request" 
           required 
         />
 

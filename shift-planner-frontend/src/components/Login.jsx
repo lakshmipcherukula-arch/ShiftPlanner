@@ -13,13 +13,13 @@ const [isLoggingIn, setIsLoggingIn] = useState(false);
 
 const navigate = useNavigate();
 
-const preset_user = "user";
-const preset_password = "shiftplanner";
+const presetUser = "Lakshmi";
+const presetPassword = "shiftplanner";
 
 const handleSubmit = (e) => {
     e.preventDefault();
 
-    if(userName === preset_user && password === preset_password){
+    if(userName === presetUser && password === presetPassword){
         setErrorMessage("");
         setSuccessMessage("Login Successful! Redirecting to the home page...");
         setIsLoggingIn(true);
@@ -30,11 +30,11 @@ const handleSubmit = (e) => {
             onLoginSuccess();
         }
         navigate("/");
-    }, 2500); 
+    }, 2000); 
 
     }else {
         setSuccessMessage("");
-        setErrorMessage("Invalid username or password. Try user/shiftplanner");
+        setErrorMessage("Invalid username or password. Try Lakshmi/shiftplanner");
     }
 };
 
@@ -47,7 +47,7 @@ return(
             </div>
             <form className="login-card" onSubmit={handleSubmit}>
                 <h2> Log In </h2>
-                <p className="login-subtitle"><strong>Username: user</strong> 
+                <p className="login-subtitle"><strong>Username: Lakshmi</strong> 
                 <br/> <strong>Password: shiftplanner</strong></p>
                 {errorMessage && <p className="login-error-msg">{errorMessage}</p>}
                 {successMessage && <p className="login-success-msg">{successMessage}</p>}
