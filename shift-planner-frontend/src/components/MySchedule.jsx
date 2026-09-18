@@ -7,6 +7,7 @@ import "../styles/MySchedule.css";
 //It also allows users to "drop" an assigned shift.
 
 function MySchedule({ schedule, onDropShift }) {
+  
   //Validation: Ensures schedule is always treated as an array, avoiding runtime crashes
   const selectedShifts = Array.isArray(schedule) ? schedule : [];
 

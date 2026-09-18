@@ -78,8 +78,8 @@ const displayedShifts = (shifts || [])
   //Checking for overlapping/conflict shifts
 
  const handleSelectClick = (selectedShift) => {
-    // Standardize ID lookup to support shiftId or id
-    const currentShiftId = selectedShift.shiftId || selectedShift.id;
+
+    const currentShiftId = selectedShift.shiftId || selectedShift.id;    // Standardize ID lookup to support shiftId or id
 
     const hasConflict = assignedShifts.some((assigned) => {
       return (
@@ -93,7 +93,7 @@ const displayedShifts = (shifts || [])
         setConflictShiftId(currentShiftId);
         setTimeout(() => {
           setConflictShiftId(null);
-        }, 5000);
+        }, 2500);
         return; 
     }
 
@@ -113,6 +113,7 @@ return (
       <h2> Available Shifts</h2>
 
       {/* Filter Bar*/}
+
       <div className="shift-filters">
         <div className="time-of-day">
         {["All", "Morning", "Afternoon", "Evening"].map((category) =>(
