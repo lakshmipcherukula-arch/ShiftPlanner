@@ -1,1 +1,1 @@
-# shift-planner-backend
+# ShiftPlanner
