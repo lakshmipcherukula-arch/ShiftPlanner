@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { Routes, Route } from "react-router-dom";
-//import mockShifts from "./components/mock-shifts";
 import Home from "./components/Home";
 import Layout from "./components/Layout";
 import MySchedule from "./components/MySchedule";
@@ -12,7 +11,7 @@ import Login from "./components/Login";
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userId, setUserId] = useState(null);
-  const [availableShifts, setavailableShifts] = useState([]);
+  const [availableShifts, setAvailableShifts] = useState([]);
   const [mySchedule, setMySchedule] = useState([]);
 
   useEffect(() => {
@@ -21,7 +20,7 @@ function App() {
         if (!res.ok) throw new Error("Unable to fetch shifts");
         return res.json();
       })
-      .then((data) => setavailableShifts(data))
+      .then((data) => setAvailableShifts(data))
       .catch((err) => console.error("Error fetching shifts:", err));
   }, []);
 
@@ -77,7 +76,7 @@ function App() {
     if (shiftToSelect) {
       try {
         await updateSchedule(id, "POST");
-        setavailableShifts((currentOpenShifts) =>
+        setAvailableShifts((currentOpenShifts) =>
           currentOpenShifts.filter(
             (shift) => (shift.shiftId || shift.id) !== id
           )
@@ -109,7 +108,7 @@ function App() {
       setMySchedule((currentMySchedule) =>
         currentMySchedule.filter((shift) => (shift.shiftId || shift.id) !== id)
       );
-      setavailableShifts((currentOpenShifts) => [
+      setAvailableShifts((currentOpenShifts) => [
         ...currentOpenShifts,
         { ...shiftToDrop, isAvailable: true },
       ]);
