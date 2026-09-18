@@ -26,7 +26,7 @@ public class Shift {
     private Boolean isAvailable = true;
 
     @ManyToMany(mappedBy = "shifts")
-    @JsonBackReference // Prevents infinite JSON recursion
+    @JsonBackReference
     private List<Schedule> schedules = new ArrayList<>();
 
     public Shift(){}
@@ -40,10 +40,6 @@ public class Shift {
 
     public Long getShiftId() {
         return shiftId;
-    }
-
-    public void setShiftId(Long shiftId) {
-        this.shiftId = shiftId;
     }
 
     public LocalDate getDate() {
@@ -86,7 +82,6 @@ public class Shift {
         this.isAvailable = isAvailable;
     }
 
-    // Update Getters & Setters to use List<Schedule> instead of single Schedule
     public List<Schedule> getSchedules() {
         return schedules;
     }
