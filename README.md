@@ -1,6 +1,8 @@
 <div align="center">
 
-# 📅 Shift Planner
+<h1 align="center">
+  <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=700&size=32&pause=1000&color=28A745&center=true&vCenter=true&width=550&lines=%F0%9F%93%95+Shift+Planner" alt="Shift Planner" />
+</h1>
 
 <p align="center">
   A full-stack web application for workforce schedule management with dynamic shift filtering and real-time conflict detection.
@@ -17,14 +19,14 @@
 
 <br />
 
-<!-- QUICK NAVIGATION -->
+<!-- QUICK NAVIGATION LINKS -->
 <p align="center">
-  <a href="#-about-the-project">About</a> •
-  <a href="#-key-features">Features</a> •
-  <a href="#-application-demo">Key Visuals</a> •
-  <a href="#-database-architecture">Database</a> •
-  <a href="#-api-endpoints">API</a> •
-  <a href="#-local-setup--installation">Installation</a>
+  <a href="#about-the-project">About</a> •
+  <a href="#key-features">Features</a> •
+  <a href="#application-demo">Key Visuals</a> •
+  <a href="#database-architecture">Database</a> •
+  <a href="#api-endpoints">API</a> •
+  <a href="#local-setup">Installation</a>
 </p>
 
 </div>
