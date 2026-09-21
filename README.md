@@ -68,32 +68,35 @@ The application features a responsive React frontend paired with a Java Spring B
 
 ---
 
+<a name="database-architecture"></a>
 ## ![](https://img.shields.io/badge/📐_Database_Architecture-E65100?style=for-the-badge)
 
-The system models a **Many-to-Many (`@ManyToMany`)** relationship between `Shift` and `Schedule` entities. This design allows master shift slots to exist in a shared pool and be assigned to multiple user schedules without duplicating database rows.
+The system models relationships between `USERS`, `SCHEDULES`, and `SHIFTS`, mapping user schedules and assigned shifts directly.
 
 ```mermaid
 erDiagram
     SHIFTS {
-        Long id PK
-        LocalDate date
-        LocalTime start_time
-        LocalTime end_time
-        Double hours
-        Boolean is_available
+        bigint id PK
+        date date
+        time start_time
+        time end_time
+        double hours
+        boolean is_available
     }
 
     SCHEDULES {
-        Long id PK
-        Long user_id FK
+        bigint id PK
+        bigint user_id FK
     }
 
-    USER_SCHEDULES {
-        Long schedule_id FK
-        Long shift_id FK
+    USERS {
+        bigint id PK
+        varchar username
+        bigint shift_id FK
     }
-SHIFTS ||--o{ USER_SCHEDULES : "included in"
-SCHEDULES ||--o{ USER_SCHEDULES : "contains" 
+
+    SHIFTS ||--o{ USERS : "included in"
+    SCHEDULES ||--o{ USERS : "contains"
 ```
 ---
 ## ![](https://img.shields.io/badge/🔗_API_Endpoints-007ACC?style=for-the-badge)
